@@ -1,0 +1,32 @@
+
+
+Vad ska en Färdig artikel innehålla?
+1. Rubrik
+    1.1 Bild/ikon = UUID till en server
+2. Ingress = text
+3. Brödtext 
+    3.1 Stycken
+        3.1.0 = text
+        3.1.1 Font (asså typ comic sans)
+        3.1.2 Font weight
+        3.1.3 Font style
+    3.2 Mellanrubriker = text
+    3.3 Bild = UUID till en server
+        3.3.1 Bildtext = text
+4. Byline
+    4.1 Skribent = Referens till UUID/Primary Key
+    4.2 Bild på Skribent = UUID till en server
+5. Datum
+    5.1 Uppdaterat Datum
+6. Teman = Referens till Tema/Primary Key 
+
+Vad ska en Skribent innehålla?
+1. Förnamn 
+2. Efternamn 
+3. Kort beskrivning
+4. Bild 
+5. UUID 
+
+Vad ska ett Tema innehålla
+1. Namn
+8D6ECoCfLLSboHnL
