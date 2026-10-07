@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: mycelienytt
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./api/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d mycelienytt"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://app:${DB_PASSWORD}@db:5432/mycelienytt
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+      NODE_ENV: ${NODE_ENV:-development}
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"   # local testing; the proxy replaces this later
+
+volumes:
+  pgdata:
+  uploads:
