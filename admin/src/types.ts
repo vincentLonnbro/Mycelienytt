@@ -1,3 +1,5 @@
+import type { JSONContent } from "@tiptap/react";
+
 export type ArticleSummary = {
   id: number;
   title: string;
@@ -5,11 +7,24 @@ export type ArticleSummary = {
   status: "draft" | "published";
   published_at: string | null;
   updated_at: string;
-  author_id: number;
-  author_name: string;
+  authors: Author[];
 };
 
 export type Author = {
   id: number;
   name: string;
+};
+
+export type ArticleFull = {
+  id: number;
+  slug: string | null;
+  status: "draft" | "published";
+  title: string;
+  summary: string | null;
+  image_url: string | null;
+  body_json: JSONContent;
+  published_at: string | null;
+  updated_at: string;
+  authors: Author[];
+  tags: string[];
 };

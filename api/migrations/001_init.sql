@@ -7,7 +7,6 @@ CREATE TABLE authors (
 
 CREATE TABLE articles (
     id           SERIAL PRIMARY KEY,
-    author_id    INT NOT NULL REFERENCES authors(id),
     slug         TEXT UNIQUE,                    
     title        TEXT NOT NULL DEFAULT 'Untitled',
     summary      TEXT,
@@ -22,6 +21,14 @@ CREATE TABLE articles (
     deleted_at   TIMESTAMPTZ,                    
     CHECK (status = 'draft' OR slug IS NOT NULL)
 );
+
+CREATE TABLE article_authors (
+    article_id INT      NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
+    author_id  INT      NOT NULL REFERENCES authors(id),
+    PRIMARY KEY (article_id, author_id)
+);
+
+CREATE INDEX article_authors_author_idx ON article_authors (author_id);
 
 CREATE TABLE tags (
   id   SERIAL PRIMARY KEY,
@@ -39,9 +46,6 @@ CREATE INDEX article_tags_tag_idx ON article_tags (tag_id);
 
 CREATE INDEX articles_public ON articles (published_at DESC)
     WHERE status = 'published' AND deleted_at IS NULL;
-    
-CREATE INDEX articles_author ON articles (author_id)
-    WHERE status = 'published' AND deleted_at IS NULL;
 
 CREATE FUNCTION set_updated_at() RETURNS trigger AS $$
 BEGIN
@@ -53,3 +57,4 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER articles_set_updated_at
     BEFORE UPDATE ON articles
     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+

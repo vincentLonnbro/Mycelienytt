@@ -34,7 +34,7 @@ export default function ArticleList() {
     try {
       const { id } = await api<{ id: number }>("/admin/articles", {
         method: "POST",
-        body: { author_id: Number(authorId) },
+        body: { author_ids: [Number(authorId)] },
       });
       navigate(`/articles/${id}`);
     } catch (err) {
@@ -113,7 +113,7 @@ export default function ArticleList() {
                       {a.status === "published" ? "Published" : "Draft"}
                     </span>
                   </td>
-                  <td>{a.author_name}</td>
+                  <td>{a.authors.map((x) => x.name).join(", ")}</td>
                   <td>{formatDate(a.updated_at)}</td>
                   <td className="actions">
                     <button className="danger" onClick={() => remove(a)}>Delete</button>

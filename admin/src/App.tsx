@@ -3,7 +3,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import { api, setUnauthorizedHandler } from "./api";
 import Login from "./Login";
 import ArticleList from "./ArticleList";
-import EditorPage from "./Editor";
+import EditorPage from "./EditorPage";
 
 type AuthState = "loading" | "loggedOut" | "loggedIn";
 

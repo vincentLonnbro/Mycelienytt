@@ -1,4 +1,5 @@
-// scripts/hash-password.js   (replaces create-user.js)
+// REMOVE THIS AT SOME POINT
+
 import readline from "node:readline/promises";
 import bcrypt from "bcrypt";
 

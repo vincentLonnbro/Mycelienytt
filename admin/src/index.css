@@ -1,0 +1,53 @@
+/* ---------- editor page ---------- */
+.editor-top {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;
+}
+.link-button {
+  background: none; border: none; padding: 0;
+  color: var(--accent); text-decoration: underline; cursor: pointer;
+}
+.save-status { font-size: 0.85rem; opacity: 0.75; }
+.save-status.error, .save-status.conflict, .save-status.blocked { color: var(--error); opacity: 1; }
+
+.banner {
+  border: 1px solid var(--error); border-radius: 8px; padding: 0.8rem 1rem;
+  margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;
+  justify-content: space-between; flex-wrap: wrap;
+}
+
+.title-input {
+  width: 100%; font-size: 1.8rem; font-weight: 700; padding: 0.4rem 0;
+  border: none; border-bottom: 1px solid var(--border); border-radius: 0; background: transparent;
+}
+.title-input:focus { outline: none; border-bottom-color: var(--accent); }
+
+.authors {
+  border: 1px solid var(--border); border-radius: 8px; margin: 1rem 0;
+  padding: 0.5rem 0.9rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem;
+}
+.authors legend { font-size: 0.8rem; opacity: 0.7; padding: 0 0.3rem; }
+.authors label { display: flex; align-items: center; gap: 0.4rem; }
+
+.format-bar {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem;
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px 8px 0 0;
+}
+.tb-sep { width: 1px; background: var(--border); margin: 0 0.2rem; }
+.tb { min-width: 2.2rem; padding: 0.3rem 0.5rem; font-size: 0.9rem; }
+.tb.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.editor-surface {
+  background: var(--card); border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+.editor-surface .tiptap { min-height: 26rem; padding: 1rem 1.2rem; outline: none; line-height: 1.65; }
+.tiptap > :first-child { margin-top: 0; }
+.tiptap h2 { font-size: 1.5rem; margin: 1.6em 0 0.5em; }
+.tiptap h3 { font-size: 1.2rem; margin: 1.4em 0 0.4em; }
+.tiptap blockquote { border-left: 3px solid var(--accent); margin: 1em 0; padding-left: 1rem; }
+.tiptap pre { background: var(--bg); padding: 0.8rem 1rem; border-radius: 6px; overflow-x: auto; }
+.tiptap pre code { background: none; padding: 0; }
+.tiptap hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
+.tiptap ul, .tiptap ol { padding-left: 1.6rem; }
