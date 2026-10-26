@@ -6,11 +6,12 @@ export const publicRouter = Router();
 
 const LIVE = "a.status = 'published' AND a.deleted_at IS NULL";
 
+// Authors of an article as JSON, alphabetical. Used in queries that alias articles as "a".
 const authorsJson = (withDescription = false) => `
   COALESCE((SELECT json_agg(json_build_object(
               'id', au.id, 'name', au.name, 'picture_url', au.picture_url
               ${withDescription ? ", 'description', au.description" : ""})
-            ORDER BY ORDER BY au.name, au.id))
+            ORDER BY au.name, au.id)
               FROM article_authors aa JOIN authors au ON au.id = aa.author_id
              WHERE aa.article_id = a.id), '[]')`;
 
@@ -91,6 +92,7 @@ publicRouter.get("/tags", async (_req, res) => {
   res.json(rows);
 });
 
+// For sitemap.xml generation on the public site
 publicRouter.get("/sitemap", async (_req, res) => {
   const { rows } = await pool.query(
     `SELECT a.slug, a.updated_at FROM articles a WHERE ${LIVE} ORDER BY a.published_at DESC`);

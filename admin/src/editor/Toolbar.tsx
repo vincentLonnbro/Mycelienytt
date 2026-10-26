@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
+import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import type { Editor } from "@tiptap/react";
+import { IMAGE_ACCEPT, uploadImage } from "../api";
+import { toEmbedUrl } from "../video";
 
 function Btn(props: {
   label: ReactNode;
@@ -24,7 +26,10 @@ function Btn(props: {
   );
 }
 
-export default function Toolbar({ editor }: { editor: Editor }) {
+export default function Toolbar({ editor, onError }: { editor: Editor; onError: (message: string) => void }) {
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   function setLink() {
     const previous = (editor.getAttributes("link").href as string | undefined) ?? "";
     const input = window.prompt("Link address (leave empty to remove the link)", previous);
@@ -36,6 +41,35 @@ export default function Toolbar({ editor }: { editor: Editor }) {
     }
     const href = /^(https?:|mailto:)/i.test(url) ? url : `https://${url}`;
     editor.chain().focus().extendMarkRange("link").setLink({ href }).run();
+  }
+
+  async function onImageChosen(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // lets the same file be chosen again later
+    if (!file) return;
+    setUploading(true);
+    onError("");
+    try {
+      const { url } = await uploadImage(file);
+      const alt = window.prompt("Describe the image for screen readers and search engines (optional)", "") ?? "";
+      editor.chain().focus().setImage({ src: url, alt: alt.trim() }).run();
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function addVideo() {
+    const input = window.prompt("Paste a YouTube or Vimeo link");
+    if (input === null || !input.trim()) return;
+    const src = toEmbedUrl(input);
+    if (!src) {
+      onError("Only YouTube and Vimeo links are supported.");
+      return;
+    }
+    onError("");
+    editor.chain().focus().insertContent({ type: "video", attrs: { src } }).run();
   }
 
   const c = () => editor.chain().focus();
@@ -57,6 +91,14 @@ export default function Toolbar({ editor }: { editor: Editor }) {
       <Btn label="—" title="Divider line" onClick={() => c().setHorizontalRule().run()} />
       <span className="tb-sep" />
       <Btn label="Link" title="Add or edit link" active={editor.isActive("link")} onClick={setLink} />
+      <Btn
+        label={uploading ? "Uploading…" : "Image"}
+        title="Insert image"
+        disabled={uploading}
+        onClick={() => fileInput.current?.click()}
+      />
+      <Btn label="Video" title="Embed a YouTube or Vimeo video" onClick={addVideo} />
+      <input ref={fileInput} type="file" accept={IMAGE_ACCEPT} hidden onChange={onImageChosen} />
       <span className="tb-sep" />
       <Btn label="Undo" title="Undo" disabled={!editor.can().undo()} onClick={() => c().undo().run()} />
       <Btn label="Redo" title="Redo" disabled={!editor.can().redo()} onClick={() => c().redo().run()} />

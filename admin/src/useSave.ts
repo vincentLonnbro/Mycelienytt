@@ -114,7 +114,10 @@ export function useAutosave({ url, initialStamp, getPayload, delay = 2000 }: Opt
   }, [run]);
 
   const hasUnsaved = useCallback(() => dirty.current || running.current !== null, []);
-
+    // Publish/unpublish change updated_at on the server; adopt the new value
+  const setStamp = useCallback((s: string) => {
+    stamp.current = s;
+  }, []);
   // Leaving the editor by any route (for example the header link): try one last save
   useEffect(() => {
     return () => {
@@ -129,5 +132,6 @@ export function useAutosave({ url, initialStamp, getPayload, delay = 2000 }: Opt
     };
   }, []);
 
-  return { status, savedAt, message, markDirty, flush, hasUnsaved };
+  
+  return { status, savedAt, message, markDirty, flush, hasUnsaved, setStamp };
 }

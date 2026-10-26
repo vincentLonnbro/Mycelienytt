@@ -14,6 +14,12 @@ app.use(helmet());
 app.use(express.json({ limit: "2mb" }));
 app.use(cookieParser());
 
+app.use("/uploads", express.static(process.env.UPLOAD_DIR || "/data/uploads", {
+  maxAge: "30d",
+  immutable: true,   // every file has a unique random name and never changes
+  index: false,
+}));
+
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api", publicRouter);
 app.use("/api/auth", authRouter);
@@ -21,7 +27,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin", requireAuth);   // everything below needs the shared password
 app.get("/api/admin/authors", async (_req, res) => {
   const { rows } = await pool.query("SELECT id, name FROM authors ORDER BY name");
-  res.json(rows);   // for the editor's author dropdown
+  res.json(rows);   // for the editor's author checkboxes
 });
 app.use("/api/admin/articles", articlesRouter);
 app.use("/api/admin/uploads", uploadRouter);
